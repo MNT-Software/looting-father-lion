@@ -25,7 +25,7 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		// Gamepad control scheme (doesn't really work well for keyboards!)
+		// Basic gamepad control scheme (doesn't really work well for keyboards!)
 		// Get horizontal and trigger input axis and store in floats
 		horizontalAxis = Input.GetAxis ("Gamepad Horizontal");
 		triggerAxis = Input.GetAxis ("Triggers");

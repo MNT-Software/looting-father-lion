@@ -323,12 +323,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 585159738}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7ca4ac6231b554cb662d693a788d6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c7d752d5c99ada489c7b9578bd9237d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 5
+  speedModifier: 0
   jumpHeight: 0
-  usingGamepad: 0
 --- !u!1 &1677081158
 GameObject:
   m_ObjectHideFlags: 0
