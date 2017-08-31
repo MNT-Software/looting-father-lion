@@ -7,6 +7,7 @@ public class Player : MonoBehaviour {
 	// Declared variables for use in script
 	// Private
 	private GameObject gameManager;
+	private SphereCollider proximitySound;
 	private float horizontalAxis;
 	private float verticalAxis;
 	private float triggerAxis;
@@ -18,18 +19,28 @@ public class Player : MonoBehaviour {
 	public float speedModifier;
 	public float jumpHeight;
 	public bool stairs;
+	public bool movingHorizontal;
+	public bool movingVertical;
+	public bool isMoving;
+	public bool isRunning;
+	public bool isSneaking;
 
 	// Use this for initialization
 	void Start () {
 		// GetComponent<Renderer> ().material.color = new Color (0, 255, 0);
 		gameManager = GameObject.Find ("Game Manager");
+		proximitySound = gameObject.GetComponentInChildren<SphereCollider> ();
 		stairs = false;
+		movingHorizontal = false;
+		movingVertical = false;
+		isMoving = false;
 	}
 		
 	// Update is called once per frame
 	void Update () {
 
 		GamepadMovement ();
+		SoundTrigger ();
 
 		// Button test (Delete me when done!)
 		if (Input.GetButtonDown ("A Button")) {
@@ -56,6 +67,7 @@ public class Player : MonoBehaviour {
 		if (Input.GetButtonDown ("Start")) {
 			Debug.Log ("Start button pressed!");
 		}
+		Debug.Log (triggerAxis);
 	}
 
 	void GamepadMovement(){
@@ -70,34 +82,46 @@ public class Player : MonoBehaviour {
 		// Horizontal Movement
 		if (horizontalAxis > 0.25) {
 			horizontalMovement = new Vector2 (1, 0);
+			movingHorizontal = true;
 		}
 		else if (horizontalAxis < -0.25) {
 			horizontalMovement = new Vector2 (-1, 0);
+			movingHorizontal = true;
 		} 
-		else if (horizontalAxis <= 0.25 | horizontalAxis >= -0.25) {
+		else if (horizontalAxis <= 0.25 && horizontalAxis >= -0.25) {
 			horizontalMovement = Vector2.zero;
+			movingHorizontal = false;
 		}	
 
 		// Vertical Movement
 		if (verticalAxis > 0.25) {
 			verticalMovement = new Vector2 (0, -1);
+			movingVertical = true;
 		}
 		else if (verticalAxis < -0.25) {
 			verticalMovement = new Vector2 (0, 1);
+			movingVertical = true;
 		} 
-		else if (verticalAxis <= 0.25 | verticalAxis >= -0.25) {
+		else if (verticalAxis <= 0.25 && verticalAxis >= -0.25) {
 			verticalMovement = Vector2.zero;
+			movingVertical = false;
 		}	
 
 		// Check to see which trigger is held down and effect the speed of the player
-		if (triggerAxis > 0.25){
+		if (triggerAxis > 0.25) {
 			speedModifier = 0.5f;
+			isSneaking = true;
+			isRunning = false;
 		}
-		else if (triggerAxis < -0.25){
+		else if (triggerAxis < -0.25) {
 			speedModifier = 2f;
+			isSneaking = false;
+			isRunning = true;
 		}
-		else if (triggerAxis <= 0.25 | horizontalAxis >= -0.25){
+		else if (triggerAxis <= 0.25 && triggerAxis >= -0.25) {
 			speedModifier = 1f;
+			isSneaking = false;
+			isRunning = false;
 		}
 
 		// Basic horizontal movement for player based on the horizontal axis input and which "speed modifying" trigger is held
@@ -108,28 +132,24 @@ public class Player : MonoBehaviour {
 		else{
 			GetComponent<Rigidbody> ().velocity = new Vector2(horizontalMovement.x, verticalMovement.y) * (moveSpeed * (speedModifier/3));
 		}
-
 	}
 
-	void StairPhysics(){
-		
-		// Disable normal physics based gravity as stairs are technically on the "z plane" for the player
+	void SoundTrigger(){
 
-	}
+		// Checks to see if the player is moving and then adjusts the radius of the sound trigger volume based
+		// on the type of player movement. Zeros the radius of the trigger volume if player is stationary.
 
-	void OnTriggerExit(Collider other){
-		if (other.gameObject.name == "Stairs") {
-			stairs = false;
-			GetComponent<Rigidbody> ().useGravity = true;
+		if (isSneaking && (movingHorizontal || (movingVertical && stairs))) {
+			proximitySound.radius = 2.5f;
+		}
+		else if (isRunning && (movingHorizontal || (movingVertical && stairs))) {
+			proximitySound.radius = 10f;
+		}
+		else if ((!isSneaking && !isRunning) && (movingHorizontal || (movingVertical && stairs))) {
+			proximitySound.radius = 5f;
+		}
+		else {
+			proximitySound.radius = 0f;
 		}
 	}
-
-	void OnTriggerStay(Collider other){
-		if (other.gameObject.name == "Stairs") {
-			stairs = true;
-			GetComponent<Rigidbody> ().useGravity = false;
-		}
-	}
-
-
 }
