@@ -27,7 +27,7 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		// GetComponent<Renderer> ().material.color = new Color (0, 255, 0);
+		GetComponent<Renderer> ().material.color = new Color (0, 255, 0);
 		gameManager = GameObject.Find ("Game Manager");
 		proximitySound = gameObject.GetComponentInChildren<SphereCollider> ();
 		stairs = false;
@@ -67,7 +67,6 @@ public class Player : MonoBehaviour {
 		if (Input.GetButtonDown ("Start")) {
 			Debug.Log ("Start button pressed!");
 		}
-		Debug.Log (triggerAxis);
 	}
 
 	void GamepadMovement(){
