@@ -137,7 +137,6 @@ public class Player : MonoBehaviour {
 
 		// Checks to see if the player is moving and then adjusts the radius of the sound trigger volume based
 		// on the type of player movement. Zeros the radius of the trigger volume if player is stationary.
-
 		if (isSneaking && (movingHorizontal || (movingVertical && stairs))) {
 			proximitySound.radius = 2.5f;
 		}
